@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "433553365514",
+    "project_id": "multibob-808c1",
+    "storage_bucket": "multibob-808c1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:433553365514:android:dd148ac6deb4810eea5df3",
+        "android_client_info": {
+          "package_name": "com.example.skilled_bob_app_web"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "433553365514-hu935mrt7c8mam13984i92o7t6kpp1o2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbhDiPClAmLNs2zmyHUi5gsbS7VndIKqY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "433553365514-hu935mrt7c8mam13984i92o7t6kpp1o2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
