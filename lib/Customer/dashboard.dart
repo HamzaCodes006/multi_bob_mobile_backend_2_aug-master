@@ -1,22 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:provider/src/provider.dart';
 import 'package:skilled_bob_app_web/Customer/my_bookings.dart';
 import 'package:skilled_bob_app_web/Customer/post_a_request_customer.dart';
-import 'package:skilled_bob_app_web/Customer/profile.dart';
-import 'package:skilled_bob_app_web/Customer/request_page.dart';
-import 'package:skilled_bob_app_web/Provider/provider_dashboard.dart';
-import 'package:skilled_bob_app_web/Provider/provider_profile_screen.dart';
-import 'package:skilled_bob_app_web/Providers/menu_controller.dart';
 import 'package:skilled_bob_app_web/authentication/login_screen.dart';
-import 'package:skilled_bob_app_web/authentication/register_screen.dart';
 import 'package:skilled_bob_app_web/isDesktop/Dashboard_desktop.dart';
 import 'package:skilled_bob_app_web/isMobile/Dashboard_mobile.dart';
 import 'package:skilled_bob_app_web/responsive.dart';
-
 import '../constant.dart';
-import 'index_page.dart';
 import 'my_favorites.dart';
 
 class Dashboard extends StatefulWidget {
@@ -33,7 +23,7 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+    // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     return Responsive(
       mobile: const DashboardMobile(),
       isDesktopMobile: const DashboardMobile(),
@@ -67,7 +57,7 @@ class SideMenu extends StatelessWidget {
               ),
               press: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Dashboard()));
+                    MaterialPageRoute(builder: (context) => const Dashboard()));
               },
               selected: selected == 1 ? true : false,
             ),
@@ -79,8 +69,10 @@ class SideMenu extends StatelessWidget {
                 size: 16,
               ),
               press: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MyFavorites()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MyFavorites()));
               },
               selected: selected == 2 ? true : false,
             ),
