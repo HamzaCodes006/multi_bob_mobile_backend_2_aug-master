@@ -1,13 +1,21 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:skilled_bob_app_web/Chat/customer_main_chat_screen.dart';
+import 'package:skilled_bob_app_web/Chat/provider_chat_main_screen.dart';
 import 'package:skilled_bob_app_web/Customer/dashboard.dart';
 import 'package:skilled_bob_app_web/Customer/index_page.dart';
+import 'package:skilled_bob_app_web/Provider/customer_requests.dart';
+import 'package:skilled_bob_app_web/Provider/my_services_screen.dart';
 import 'package:skilled_bob_app_web/Provider/post_service_screen.dart';
 import 'package:skilled_bob_app_web/Provider/provider_jobs_screen.dart';
 import 'package:skilled_bob_app_web/Provider/provider_profile_screen.dart';
 import 'package:skilled_bob_app_web/authentication/login_screen.dart';
 import 'package:skilled_bob_app_web/authentication/register_screen.dart';
 
+import '../Chat/provider_chat_screen.dart';
+import '../Providers/chat_provider.dart';
+import '../authentication/authentication_services.dart';
 import '../constant.dart';
 import 'job_requests.dart';
 
@@ -72,8 +80,7 @@ class _ProviderDashboardState extends State<ProviderDashboard> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  const ProviderJobsScreen()));
+                              builder: (context) => const MyServicesScreen()));
                     },
                   ),
                   BuildMenuItem(
@@ -89,7 +96,16 @@ class _ProviderDashboardState extends State<ProviderDashboard> {
                   BuildMenuItem(
                     icon: Icons.chat,
                     text: 'Chat',
-                    onPresed: () {},
+                    onPresed: () {
+                      // context
+                      //     .read<ChatProvider>()
+                      //     .setCustomerUidAndEmail(widget.providerId.toString());
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const CustomerMainChatScreen()));
+                    },
                   ),
                   BuildMenuItem(
                     icon: Icons.request_page_outlined,
@@ -122,12 +138,14 @@ class _ProviderDashboardState extends State<ProviderDashboard> {
                     icon: Icons.logout,
                     text: 'Log Out',
                     onPresed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoginScreen(),
-                        ),
-                      );
+                      context.read<AuthenticationService>().signOut(context);
+                      Navigator.pushReplacementNamed(context, LoginScreen.id);
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => const LoginScreen(),
+                      //   ),
+                      // );
                     },
                   ),
                 ],
@@ -184,7 +202,7 @@ class _ProviderDashboardState extends State<ProviderDashboard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children:  [
+                      children: [
                         const Center(
                             child: Text(
                           'Usama',
@@ -209,7 +227,9 @@ class _ProviderDashboardState extends State<ProviderDashboard> {
                   SingleChildScrollView(
                     child: Column(
                       children: [
-                        SizedBox(height: 50.0,),
+                        const SizedBox(
+                          height: 50.0,
+                        ),
                         Padding(
                           padding: const EdgeInsets.all(2.0),
                           child: SwitchListTile(
@@ -309,7 +329,7 @@ class _ProviderDashboardState extends State<ProviderDashboard> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const ProviderJobsScreen()));
+                                          const MyServicesScreen()));
                             },
                             child: Container(
                                 decoration: const BoxDecoration(
@@ -573,8 +593,7 @@ class _ProviderDashboardState extends State<ProviderDashboard> {
                                 )),
                           ),
                         ),
-
-                        // logout
+                        //customer requests
                         Padding(
                           padding: const EdgeInsets.only(
                               top: 10.0, right: 20, left: 20),
@@ -584,7 +603,83 @@ class _ProviderDashboardState extends State<ProviderDashboard> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const RegisterScreen()));
+                                          const CustomerRequests()));
+                            },
+                            child: Container(
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12)),
+                                ),
+                                //height: 300,
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.request_page_outlined,
+                                                color: Colors.blue,
+                                                size: 25,
+                                              ),
+                                              // Image.asset(
+                                              //   'images/writing down.png',
+                                              //   color: Colors.blue,
+                                              //   height: 25,
+                                              // ),
+                                              const SizedBox(
+                                                width: 15,
+                                              ),
+                                              Container(
+                                                color: Colors.black45,
+                                                height: 26,
+                                                width: 1.5,
+                                              ),
+                                              const SizedBox(
+                                                width: 15,
+                                              ),
+                                              const Text(
+                                                'Customer Requests',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const Icon(
+                                            Icons.arrow_forward_ios,
+                                            size: 17,
+                                            color: Colors.black54,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                          ),
+                        ),
+                        // logout
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 10.0, right: 20, left: 20),
+                          child: InkWell(
+                            onTap: () {
+                              context
+                                  .read<AuthenticationService>()
+                                  .signOut(context);
+                              Navigator.pushReplacementNamed(
+                                  context, LoginScreen.id);
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) =>
+                              //             const RegisterScreen()));
                             },
                             child: Container(
                                 decoration: const BoxDecoration(

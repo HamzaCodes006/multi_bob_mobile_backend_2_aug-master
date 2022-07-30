@@ -5,16 +5,21 @@ import 'package:skilled_bob_app_web/Customer/request_page.dart';
 import 'package:skilled_bob_app_web/constant.dart';
 import '../constant.dart';
 import '../widgets/booking_options_popup_menu_widget.dart';
+import 'job_detail_page.dart';
 
 class CustomerVehicleServicesScreen extends StatefulWidget {
-  static const String id ='CustomerVehicleServicesScreen';
-  const CustomerVehicleServicesScreen({Key? key}) : super(key: key);
+  static const String id = 'CustomerVehicleServicesScreen';
+  final String serviceName;
+  const CustomerVehicleServicesScreen({Key? key, required this.serviceName})
+      : super(key: key);
 
   @override
-  _CustomerVehicleServicesScreenState createState() => _CustomerVehicleServicesScreenState();
+  _CustomerVehicleServicesScreenState createState() =>
+      _CustomerVehicleServicesScreenState();
 }
 
-class _CustomerVehicleServicesScreenState extends State<CustomerVehicleServicesScreen> {
+class _CustomerVehicleServicesScreenState
+    extends State<CustomerVehicleServicesScreen> {
   bool isFavourite = false;
 
   @override
@@ -22,9 +27,9 @@ class _CustomerVehicleServicesScreenState extends State<CustomerVehicleServicesS
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Vehicles Services',
-          style: TextStyle(fontSize: 18.0, color: kLightBlue),
+        title: Text(
+          widget.serviceName.toString(),
+          style: const TextStyle(fontSize: 18.0, color: kLightBlue),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -41,15 +46,22 @@ class _CustomerVehicleServicesScreenState extends State<CustomerVehicleServicesS
           SliverToBoxAdapter(
             child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
-                    .collection('Services').where('serviceCategory',isEqualTo: 'Cars & Motorbike Service')
+                    .collection('Services')
+                    .doc(widget.serviceName.toString())
+                    .collection('myServices')
+                    // .where('serviceCategory',
+                    //     isEqualTo: 'Cars & Motorbike Service')
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return const Center(
                         child: CircularProgressIndicator(
-                          color: kDarkBlueColor,
-                        ));
+                      color: kDarkBlueColor,
+                    ));
                   }
+                  final List uId = snapshot.data!.docs.map((e) {
+                    return e.id;
+                  }).toList();
                   final List serviceTitle = snapshot.data!.docs.map((e) {
                     return e['serviceTitle'];
                   }).toList();
@@ -65,12 +77,12 @@ class _CustomerVehicleServicesScreenState extends State<CustomerVehicleServicesS
                   final List serviceURL = snapshot.data!.docs.map((e) {
                     return e['serviceURL'];
                   }).toList();
-                  // final List productId = snapshot.data.docs.map((e) {
-                  //   return e.id;
-                  // }).toList();
-                  final List serviceCategory = snapshot.data!.docs.map((e) {
-                    return e['serviceCategory'];
+                  final List providerId = snapshot.data!.docs.map((e) {
+                    return e['providerId'];
                   }).toList();
+                  // final List serviceCategory = snapshot.data!.docs.map((e) {
+                  //   return e['serviceCategory'];
+                  // }).toList();
                   return Wrap(
                     children: [
                       ListView.builder(
@@ -84,7 +96,16 @@ class _CustomerVehicleServicesScreenState extends State<CustomerVehicleServicesS
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const Request(),
+                                    builder: (context) => JobDetail(
+                                      jID: uId[index],
+                                      jobDescription: serviceDescription[index],
+                                      jobImages: serviceURL[index],
+                                      jobName: serviceTitle[index],
+                                      jobPrice: servicePrice[index].toString(),
+                                      providerId: providerId[index],
+                                      jobRating:
+                                          serviceRating[index].toString(),
+                                    ),
                                   ),
                                 );
                               },
@@ -114,7 +135,7 @@ class _CustomerVehicleServicesScreenState extends State<CustomerVehicleServicesS
                                         tag: '',
                                         child: ClipRRect(
                                           borderRadius:
-                                          BorderRadius.circular(10.0),
+                                              BorderRadius.circular(10.0),
                                           child: Image.network(
                                             serviceURL[index][0],
                                             height: 80,
@@ -125,8 +146,8 @@ class _CustomerVehicleServicesScreenState extends State<CustomerVehicleServicesS
                                       ),
                                       Padding(
                                         // ignore: prefer_const_constructors
-                                        padding:
-                                        const EdgeInsets.symmetric(vertical: 8.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
                                         child: Text(
                                           'Hourly Rate',
                                           style: kBodyTextBlack.copyWith(
@@ -141,8 +162,7 @@ class _CustomerVehicleServicesScreenState extends State<CustomerVehicleServicesS
                                         runSpacing: 10,
                                         alignment: WrapAlignment.start,
                                         children: <Widget>[
-                                          Row(
-                                              children: [
+                                          Row(children: [
                                             Expanded(
                                                 child: Text(serviceTitle[index],
                                                     style: const TextStyle(
@@ -150,21 +170,17 @@ class _CustomerVehicleServicesScreenState extends State<CustomerVehicleServicesS
                                                         height: 1.4,
                                                         fontSize: 16,
                                                         fontWeight:
-                                                        FontWeight.bold))),
-                                                IconButton(
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        isFavourite =
-                                                        !isFavourite;
-                                                      });
-                                                    },
-                                                    icon:
-                                                    isFavourite
-                                                        ?
-                                                    const Icon(Icons.favorite)
-                                                  : const Icon(Icons
-                                                  .favorite_border)
-                                                )
+                                                            FontWeight.bold))),
+                                            IconButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    isFavourite = !isFavourite;
+                                                  });
+                                                },
+                                                icon: isFavourite
+                                                    ? const Icon(Icons.favorite)
+                                                    : const Icon(
+                                                        Icons.favorite_border))
                                             // BookingOptionsPopupMenuWidget()
                                           ]),
                                           const Divider(
@@ -173,71 +189,73 @@ class _CustomerVehicleServicesScreenState extends State<CustomerVehicleServicesS
                                           ),
                                           Row(
                                               mainAxisAlignment:
-                                              MainAxisAlignment
-                                                  .spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Wrap(
                                                     crossAxisAlignment:
-                                                    WrapCrossAlignment
-                                                        .center,
+                                                        WrapCrossAlignment
+                                                            .center,
                                                     spacing: 5,
                                                     children: [
                                                       SizedBox(
                                                           height: 32,
                                                           child: Chip(
                                                               padding:
-                                                              const EdgeInsets.all(
-                                                                  0),
+                                                                  const EdgeInsets.all(
+                                                                      0),
                                                               label: Row(
                                                                   mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
+                                                                      MainAxisAlignment
+                                                                          .center,
                                                                   children: <
                                                                       Widget>[
                                                                     const Icon(
                                                                         Icons
                                                                             .star,
                                                                         color:
-                                                                        kLightBlue,
+                                                                            kLightBlue,
                                                                         size:
-                                                                        16),
+                                                                            16),
                                                                     Text(
-                                                                        serviceRating[
-                                                                        index],
+                                                                        serviceRating[index]
+                                                                            .toString(),
                                                                         style: const TextStyle(
                                                                             color:
-                                                                            kLightBlue,
+                                                                                kLightBlue,
                                                                             height:
-                                                                            1.4))
+                                                                                1.4))
                                                                   ]),
                                                               backgroundColor:
-                                                              kLightBlue
-                                                                  .withOpacity(
-                                                                  0.15),
+                                                                  kLightBlue
+                                                                      .withOpacity(
+                                                                          0.15),
                                                               shape:
-                                                              const StadiumBorder())),
+                                                                  const StadiumBorder())),
                                                       const Text('(44)',
                                                           style: TextStyle(
                                                               color: kLightBlue,
                                                               height: 1.4))
                                                     ]),
                                                 const Text(
-                                                  '30 km',//jago or fr distance calculate kr k dalo
+                                                  '30 km',
+                                                  //jago or fr distance calculate kr k dalo
                                                   //us k bad favourite kro or akhir mein job display screen py data lao
                                                   style: TextStyle(
-                                                      color: kLightBlue, height: 1.4),
+                                                      color: kLightBlue,
+                                                      height: 1.4),
                                                 ),
                                               ]),
                                           const Divider(
                                               height: 6, thickness: 0.5),
                                           Column(
                                             crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children:  [
+                                                CrossAxisAlignment.start,
+                                            children: [
                                               const Text('Description',
                                                   maxLines: 1,
                                                   overflow:
-                                                  TextOverflow.ellipsis,
+                                                      TextOverflow.ellipsis,
                                                   style: TextStyle(
                                                       fontSize: 17.0,
                                                       color: Colors.black87)),

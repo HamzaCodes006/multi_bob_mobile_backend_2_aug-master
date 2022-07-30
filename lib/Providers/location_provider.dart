@@ -22,7 +22,7 @@ class LocationProvider extends ChangeNotifier {
   Position? currentUserPosition;
   double? distanceImMeter = 0.0;
 
-  Future getCurrentAddress() async {
+  Future<Position> getCurrentAddress() async {
     // Location location = Location();
     //
     // bool _serviceEnabled;
@@ -98,6 +98,7 @@ class LocationProvider extends ChangeNotifier {
     locality = place.locality;
     adminArea = place.administrativeArea;
     countryName = place.country;
+    print(countryName);
     notifyListeners();
     return position;
   }
@@ -133,7 +134,6 @@ class LocationProvider extends ChangeNotifier {
       distanceOfAllService = newDistanceOfAllService;
       print(
           '+++++++++++================Final distanceOfAllService: $distanceOfAllService km,');
-
       notifyListeners();
     });
   }

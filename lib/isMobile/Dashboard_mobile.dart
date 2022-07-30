@@ -3,12 +3,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skilled_bob_app_web/Providers/profile_data.dart';
+import '../Chat/customer_main_chat_screen.dart';
 import '../Customer/index_page.dart';
 import '../Customer/my_bookings.dart';
 import '../Customer/my_favorites.dart';
 import '../Customer/post_a_request_customer.dart';
 import '../Customer/profile.dart';
 import '../Provider/provider_dashboard.dart';
+import '../authentication/authentication_services.dart';
+import '../authentication/login_screen.dart';
 import '../authentication/register_screen.dart';
 
 class DashboardMobile extends StatefulWidget {
@@ -410,11 +413,11 @@ class _DashboardMobileState extends State<DashboardMobile> {
                                     top: 10.0, right: 20, left: 20),
                                 child: InkWell(
                                   onTap: () {
-                                    // Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //         builder: (context) =>
-                                    //             ProviderProfileScreen()));
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const CustomerMainChatScreen()));
                                   },
                                   child: Container(
                                       decoration: const BoxDecoration(
@@ -546,11 +549,16 @@ class _DashboardMobileState extends State<DashboardMobile> {
                                     top: 10.0, right: 20, left: 20),
                                 child: InkWell(
                                   onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const RegisterScreen()));
+                                    context
+                                        .read<AuthenticationService>()
+                                        .signOut(context);
+                                    Navigator.pushReplacementNamed(
+                                        context, LoginScreen.id);
+                                    // Navigator.push(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //         builder: (context) =>
+                                    //             const RegisterScreen()));
                                   },
                                   child: Container(
                                       decoration: const BoxDecoration(

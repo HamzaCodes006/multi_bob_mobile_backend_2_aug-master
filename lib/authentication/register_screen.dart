@@ -513,15 +513,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const RegisterScreen()),
+                                              const IndexPage()),
                                     );
                                   } else if (value == 'weak-password') {
                                     setState(() {
                                       _saving = false;
                                     });
-                                    context.read<CustomSnackBars>().setCustomSnackBar(
+                                    context
+                                        .read<CustomSnackBars>()
+                                        .setCustomSnackBar(
                                           title: 'Weak Password!',
-                                          message: 'The password provided is too weak.',
+                                          message:
+                                              'The password provided is too weak.',
                                           contentType: ContentType.failure,
                                           context: context,
                                         );
@@ -529,13 +532,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     setState(() {
                                       _saving = false;
                                     });
-                                    context.read<CustomSnackBars>().setCustomSnackBar(
+                                    context
+                                        .read<CustomSnackBars>()
+                                        .setCustomSnackBar(
                                           title: 'Email Already Exists',
-                                          message: 'The account already exists for that email.',
+                                          message:
+                                              'The account already exists for that email.',
                                           contentType: ContentType.failure,
                                           context: context,
                                         );
-                                  }else {
+                                  } else {
                                     setState(() {
                                       _saving = false;
                                     });

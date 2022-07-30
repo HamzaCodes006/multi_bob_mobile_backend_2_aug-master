@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:skilled_bob_app_web/Provider/my_services_screen.dart';
 import 'package:skilled_bob_app_web/Providers/location_provider.dart';
@@ -20,6 +22,7 @@ class PostServiceScreenMobile extends StatefulWidget {
 }
 
 class _PostServiceScreenMobileState extends State<PostServiceScreenMobile> {
+  int selectedImage = 0;
   bool convert = true;
   List<String> options = [
     'Cars & Motorbike Service',
@@ -68,8 +71,8 @@ class _PostServiceScreenMobileState extends State<PostServiceScreenMobile> {
   final _jobTitleController = TextEditingController();
   final _jobDescriptionController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  List<String>? _fileURLs;
-  List<File>? _fileList;
+  List<String>? _imageURLs;
+  List<XFile>? _imageList;
 
   //Multiple Files Upload
   Future<String> uploadMultipleFiles(filePath, serviceTitle) async {
@@ -457,20 +460,20 @@ class _PostServiceScreenMobileState extends State<PostServiceScreenMobile> {
                         GestureDetector(
                           onTap: () {
                             _serviceProvider
-                                .multipleFilesPicker()
-                                .then((fileList) {
+                                .multipleImagePicker()
+                                .then((imageList) {
                               setState(() {
-                                _fileList = fileList;
+                                _imageList = imageList;
                               });
                             }).then((value) {
                               _serviceProvider.isPicAvail = true;
                               _serviceProvider
-                                  .uploadMultipleFiles(
-                                      _fileList!, _jobTitleController.text)
+                                  .uploadMultipleImages(
+                                      _imageList!, _jobTitleController.text)
                                   .then((URLs) {
-                                _fileURLs = URLs;
+                                _imageURLs = URLs;
                                 print(
-                                    'URLs=================>>>>>>>>$_fileURLs,,,');
+                                    'URLs=================>>>>>>>>$_imageURLs,,,');
                               });
                             });
                           },
@@ -505,17 +508,45 @@ class _PostServiceScreenMobileState extends State<PostServiceScreenMobile> {
                         Padding(
                           padding: const EdgeInsets.only(
                               bottom: 15.0, right: 25.0, left: 25.0),
-                          child: Text(_fileList != null
+                          child: Text(_imageList != null
                               ? _serviceProvider.fileName.toString()
-                              : 'No media file selected.'),
+                              : 'No image selected.'),
                         ),
+                        // Padding(
+                        //   padding: const EdgeInsets.all(8.0),
+                        //   child: Center(
+                        //     child: SingleChildScrollView(
+                        //       scrollDirection: Axis.horizontal,
+                        //       child: Row(
+                        //         mainAxisAlignment: MainAxisAlignment.center,
+                        //         children: [
+                        //           ...List.generate(
+                        //               _fileURLs!.length,
+                        //               (index) => GestureDetector(
+                        //                     onTap: () {
+                        //                       setState(() {
+                        //                         selectedImage = index;
+                        //                       });
+                        //                     },
+                        //                     child: Image.network(
+                        //                       _fileURLs![index] ??
+                        //                           'https://www.pngitem.com/pimgs/m/4-40070_user-staff-man-profile-user-account-icon-jpg.png',
+                        //                       height: 48,
+                        //                       width: 48,
+                        //                     ),
+                        //                   )),
+                        //         ],
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
                         //title
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 8.0, horizontal: 25.0),
                           child: TextFormField(
                             controller: _jobTitleController,
-                            maxLength: 40,
+                            maxLength: 51,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please Enter Job Title';
@@ -782,29 +813,36 @@ class _PostServiceScreenMobileState extends State<PostServiceScreenMobile> {
                                 onPressed: () async {
                                   if (_serviceProvider.isPicAvail == true) {
                                     if (_formKey.currentState!.validate()) {
+                                      EasyLoading.show(status: 'Uplaoding..');
                                       //  save the information in a database.
                                       _serviceProvider
                                           .saveServiceDetailsToFB(
-                                        jobLatitude: _locationProvider.serviceLatitude.toString(),
-                                        jobLongitude: _locationProvider.serviceLongitude.toString(),
+                                        jobLatitude: _locationProvider
+                                            .serviceLatitude
+                                            .toString(),
+                                        jobLongitude: _locationProvider
+                                            .serviceLongitude
+                                            .toString(),
                                         jobAddress:
                                             _locationProvider.serviceAddress,
                                         jobCategory: jobCategory,
                                         jobDescription: jobDescription,
                                         jobPrice: jobPrice,
                                         jobTitle: jobTitle,
-                                        jobURL: _fileURLs,
+                                        jobURL: _imageURLs,
                                       )
                                           .then((value) {
-
+                                        EasyLoading.showSuccess(
+                                            'Uploading Done.');
+                                        EasyLoading.dismiss();
+                                        _formKey.currentState!.reset();
+                                        _imageURLs = null;
                                         Navigator.pushNamed(
                                             context, MyServicesScreen.id);
-
                                       }).then((value) {
                                         setState(() {
                                           _formKey.currentState!.reset();
-                                          _fileList=null;
-
+                                          _imageURLs = null;
                                         });
                                       });
                                     } else {

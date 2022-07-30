@@ -9,12 +9,41 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
 class ServiceProvider extends ChangeNotifier {
+  String? _category;
+  String? _title;
+  String? _serviceUid;
+  String? _providerUid;
+  String? _providerEmail;
   bool isPicAvail = false;
-  List<XFile>? newImage;
+  List<XFile>? newImages;
   List<File>? newFiles;
   String? error;
   String? fileName;
   double progress = 0.0;
+
+  String? get category => _category;
+
+  String? get title => _title;
+
+  String? get serviceUid => _serviceUid;
+
+  String? get providerUid => _providerUid;
+
+  String? get providerEmail => _providerEmail;
+
+  void setServicesData({
+    String? category,
+    String? title,
+    String? serviceUid,
+    String? providerUid,
+    String? providerEmail,
+  }) {
+    _category = category;
+    _title = title;
+    _serviceUid = serviceUid;
+    _providerUid = providerUid;
+    _providerEmail = providerEmail;
+  }
 
   //multiple Files picker
   Future<List<File>?> multipleFilesPicker() async {
@@ -68,7 +97,7 @@ class ServiceProvider extends ChangeNotifier {
   //multiple image picker
   final ImagePicker _picker = ImagePicker();
 
-  Future<List<XFile>?> getServiceImage() async {
+  Future<List<XFile>?> multipleImagePicker() async {
     // final XFile? image = await _picker.pickImage(
     //     source: ImageSource.gallery,
     //     imageQuality: 20,
@@ -82,8 +111,10 @@ class ServiceProvider extends ChangeNotifier {
     );
     if (image != null) {
       // print('111111111111111111111111111');
-      newImage = image;
-      // print('22222222222222222222222222222');
+      newImages = image;
+      fileName = image.first.name;
+
+      // print('22222222222222222222222222222${image.first.name}');
       // newImage = File(image.path);
       notifyListeners();
       // print(newImage);
@@ -93,24 +124,26 @@ class ServiceProvider extends ChangeNotifier {
       notifyListeners();
     }
     // final file = image.toFile();
-    print(newImage);
-    return newImage;
+    // print(newImages);
+    return newImages;
   }
 
   //upload multiple images
-  Future<List<String>> uploadMultipleImages(List<XFile> _images) async {
-    var imageUrls =
-        await Future.wait(_images.map((_image) => uploadImage(_image)));
+  Future<List<String>> uploadMultipleImages(
+      List<XFile> _images, String fileName) async {
+    var imageUrls = await Future.wait(
+        _images.map((_image) => uploadImage(_image, fileName)));
 
-    print('------->>>>>>>>>>>>>>>$imageUrls');
+    // print('------->>>>>>>>>>>>>>>$imageUrls');
     return imageUrls;
   }
 
-  Future<String> uploadImage(XFile _image) async {
+  Future<String> uploadImage(XFile _image, String fileName) async {
     var timeStamp = Timestamp.now();
     double progress = 0.0;
     FirebaseStorage storageReference = FirebaseStorage.instance;
-    Reference ref = storageReference.ref().child('sampleImages/$timeStamp');
+    Reference ref =
+        storageReference.ref().child('serviceImages/$fileName/$timeStamp');
     UploadTask uploadTask = ref.putFile(File(_image.path));
     uploadTask.snapshotEvents.listen((event) {
       progress =
@@ -153,11 +186,13 @@ class ServiceProvider extends ChangeNotifier {
     required List<String>? jobURL,
     required String? jobLatitude,
     required String? jobLongitude,
-
   }) async {
     try {
       final addService = await FirebaseFirestore.instance
           .collection('Services')
+          .doc(jobCategory)
+          .collection('myServices')
+          // .doc(FirebaseAuth.instance.currentUser!.uid)
           .add({
             'serviceCategory': jobCategory,
             'serviceTitle': jobTitle,

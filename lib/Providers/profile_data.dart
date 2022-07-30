@@ -3,15 +3,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 class ProfileData {
-  String _userName = '';
-  String _email = '';
-  String _profileURL = '';
-
-  String get userName => _userName;
-
-  String get email => _email;
-
-  String get profileURL => _profileURL;
+  // String _userName = '';
+  // String _email = '';
+  // String _profileURL = '';
+  //
+  // String get userName => _userName;
+  //
+  // String get email => _email;
+  //
+  // String get profileURL => _profileURL;
 
   Stream<Map<String, dynamic>?> setDashboardData() {
     return FirebaseFirestore.instance

@@ -1,35 +1,34 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:skilled_bob_app_web/Customer/job_detail_page.dart';
 import 'package:skilled_bob_app_web/Customer/request_page.dart';
+import 'package:skilled_bob_app_web/Providers/service_provider.dart';
 import 'package:skilled_bob_app_web/constant.dart';
 import '../constant.dart';
-import 'job_detail_page.dart';
+import '../widgets/booking_options_popup_menu_widget.dart';
 
-class CustomerConstructionServicesScreen extends StatefulWidget {
-  static const String id = 'CustomerConstructionServicesScreen';
-  final String serviceName;
-
-  const CustomerConstructionServicesScreen(
-      {Key? key, required this.serviceName})
-      : super(key: key);
+class CustomerServicesScreen extends StatefulWidget {
+  const CustomerServicesScreen({Key? key}) : super(key: key);
 
   @override
-  _CustomerConstructionServicesScreenState createState() =>
-      _CustomerConstructionServicesScreenState();
+  _CustomerServicesScreenState createState() => _CustomerServicesScreenState();
 }
 
-class _CustomerConstructionServicesScreenState
-    extends State<CustomerConstructionServicesScreen> {
-  bool isFavourite = false;
+class _CustomerServicesScreenState extends State<CustomerServicesScreen> {
+  bool favorite = false;
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Construction Services',
-          style: TextStyle(fontSize: 18.0, color: kLightBlue),
+        title: Text(
+          context.read<ServiceProvider>().category.toString(),
+          style: const TextStyle(fontSize: 18.0, color: kLightBlue),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -47,10 +46,11 @@ class _CustomerConstructionServicesScreenState
             child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('Services')
-                    .doc(widget.serviceName.toString())
+                    .doc(context.read<ServiceProvider>().category.toString())
                     .collection('myServices')
-                    // .where('serviceCategory',
-                    //     isEqualTo: 'Construction & Painting')
+                    // .where('providerEmail',
+                    //     isEqualTo: FirebaseAuth.instance.currentUser!.email)
+                    // .orderBy('serviceTitle',descending: false)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
@@ -78,11 +78,9 @@ class _CustomerConstructionServicesScreenState
                     return e['serviceURL'];
                   }).toList();
                   final List providerId = snapshot.data!.docs.map((e) {
+                    print(e['providerId']);
                     return e['providerId'];
                   }).toList();
-                  // final List productId = snapshot.data.docs.map((e) {
-                  //   return e.id;
-                  // }).toList();
                   final List serviceCategory = snapshot.data!.docs.map((e) {
                     return e['serviceCategory'];
                   }).toList();
@@ -96,6 +94,8 @@ class _CustomerConstructionServicesScreenState
                           itemBuilder: ((_, index) {
                             return GestureDetector(
                               onTap: () {
+                                print(
+                                    {'proooooooooooo : ${providerId[index]}'});
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -106,8 +106,8 @@ class _CustomerConstructionServicesScreenState
                                       jobName: serviceTitle[index],
                                       jobPrice: servicePrice[index].toString(),
                                       providerId: providerId[index],
-                                      jobRating:
-                                          serviceRating[index].toString(),
+                                      category: serviceCategory[index],
+                                      jobRating: serviceRating[index],
                                     ),
                                   ),
                                 );
@@ -144,20 +144,15 @@ class _CustomerConstructionServicesScreenState
                                             height: 80,
                                             width: 80,
                                             fit: BoxFit.cover,
+//   errorWidget: (context, url,
+//           error) =>
+//       const Icon(Icons.error_outline),
+// ),
                                           ),
                                         ),
                                       ),
-                                      Padding(
-                                        // ignore: prefer_const_constructors
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 8.0),
-                                        child: Text(
-                                          'Hourly Rate',
-                                          style: kBodyTextBlack.copyWith(
-                                              fontSize: 15.0),
-                                        ),
-                                      ),
-                                      Text('\$${servicePrice[index]}/hr'),
+
+//
                                     ]),
                                     const SizedBox(width: 12),
                                     Expanded(
@@ -174,17 +169,7 @@ class _CustomerConstructionServicesScreenState
                                                         fontSize: 16,
                                                         fontWeight:
                                                             FontWeight.bold))),
-                                            IconButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                    isFavourite = !isFavourite;
-                                                  });
-                                                },
-                                                icon: isFavourite
-                                                    ? const Icon(Icons.favorite)
-                                                    : const Icon(
-                                                        Icons.favorite_border))
-                                            // BookingOptionsPopupMenuWidget()
+                                            const BookingOptionsPopupMenuWidget()
                                           ]),
                                           const Divider(
                                             height: 6,
@@ -240,12 +225,6 @@ class _CustomerConstructionServicesScreenState
                                                               color: kLightBlue,
                                                               height: 1.4))
                                                     ]),
-                                                const Text(
-                                                  '30 km',
-                                                  style: TextStyle(
-                                                      color: kLightBlue,
-                                                      height: 1.4),
-                                                ),
                                               ]),
                                           const Divider(
                                               height: 6, thickness: 0.5),

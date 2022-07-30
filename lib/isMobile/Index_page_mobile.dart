@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+import 'package:skilled_bob_app_web/Chat/customer_main_chat_screen.dart';
+import 'package:skilled_bob_app_web/Chat/provider_chat_main_screen.dart';
 import 'package:skilled_bob_app_web/Customer/customer_construction_service_screen.dart';
 import 'package:skilled_bob_app_web/Customer/customer_it_service_screen.dart';
 import 'package:skilled_bob_app_web/Customer/customer_vehicle_services_screen.dart';
@@ -18,6 +20,7 @@ import 'package:skilled_bob_app_web/Providers/location_provider.dart';
 import 'package:skilled_bob_app_web/authentication/authentication_services.dart';
 import 'package:skilled_bob_app_web/authentication/login_screen.dart';
 import 'package:skilled_bob_app_web/Customer/category.dart';
+import '../Providers/service_provider.dart';
 import '../constant.dart';
 import 'dart:math' as math;
 import '../Customer/dashboard.dart';
@@ -33,6 +36,8 @@ class IndexPageMobile extends StatefulWidget {
 
 class _IndexPageMobileState extends State<IndexPageMobile> {
   var _bottomNavIndex = 0;
+  String imageUrl =
+      'https://eitrawmaterials.eu/wp-content/uploads/2016/09/person-icon.png';
   final List<String> imgList = [
     'images/car service.jpg',
     'images/painting.jpg',
@@ -46,6 +51,7 @@ class _IndexPageMobileState extends State<IndexPageMobile> {
   ];
   double? userLatitude;
   double? userLongitude;
+
   updateLocation() async {
     LocationProvider locationProvider = Provider.of(context, listen: false);
     Position position = await locationProvider.getCurrentAddress();
@@ -74,6 +80,7 @@ class _IndexPageMobileState extends State<IndexPageMobile> {
     Map<String, dynamic>? documents =
         Provider.of<Map<String, dynamic>?>(context);
     Size size = MediaQuery.of(context).size;
+    print(documents!['profileURL'].toString());
     return documents != null
         ? SafeArea(
             child: Scaffold(
@@ -100,8 +107,13 @@ class _IndexPageMobileState extends State<IndexPageMobile> {
                                 ),
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
-                                  image: NetworkImage(
-                                      documents!['profileURL'].toString()),
+                                  image: documents['profileURL'].toString() !=
+                                          'default'
+                                      ? NetworkImage(
+                                          documents['profileURL'].toString(),
+                                        )
+                                      : NetworkImage(imageUrl.toString()),
+                                  // : AssetImage(assetName),
                                 ),
                               ),
                             ),
@@ -159,7 +171,13 @@ class _IndexPageMobileState extends State<IndexPageMobile> {
                         BuildMenuItem(
                           icon: Icons.chat,
                           text: 'Chat',
-                          onPresed: () {},
+                          onPresed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const CustomerMainChatScreen()));
+                          },
                         ),
                         BuildMenuItem(
                           icon: Icons.language,
@@ -306,11 +324,16 @@ class _IndexPageMobileState extends State<IndexPageMobile> {
                             ),
                             child: InkWell(
                               onTap: () {
+                                context.read<ServiceProvider>().setServicesData(
+                                    category: 'Cars & Motorbike Service');
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const CustomerVehicleServicesScreen()));
+                                            const CustomerVehicleServicesScreen(
+                                              serviceName:
+                                                  'Cars & Motorbike Service',
+                                            )));
                               },
                               child: Container(
                                 width: 210,
@@ -392,11 +415,16 @@ class _IndexPageMobileState extends State<IndexPageMobile> {
                             ),
                             child: InkWell(
                               onTap: () {
+                                context.read<ServiceProvider>().setServicesData(
+                                    category: 'Construction & Painting');
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const CustomerConstructionServicesScreen()));
+                                            const CustomerConstructionServicesScreen(
+                                              serviceName:
+                                                  'Construction & Painting',
+                                            )));
                               },
                               child: Container(
                                 width: 210,
@@ -477,11 +505,16 @@ class _IndexPageMobileState extends State<IndexPageMobile> {
                             ),
                             child: InkWell(
                               onTap: () {
+                                context.read<ServiceProvider>().setServicesData(
+                                    category: 'Web, Computer & IT Service');
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const CustomerITServicesScreen()));
+                                            const CustomerITServicesScreen(
+                                              serviceName:
+                                                  'Web, Computer & IT Service',
+                                            )));
                               },
                               child: Container(
                                 width: 210,

@@ -103,8 +103,9 @@ class AuthProvider extends ChangeNotifier {
             'address': '',
             'city': '',
             'state': '',
-            'Country': '',
+            'country': '',
             'profileURL': 'default',
+            'provider': false,
           })
           .then((value) => print('User Added Successfully!!'))
           .catchError((onError) {

@@ -48,23 +48,6 @@ class _ProfileState extends State<Profile> {
 
   TextEditingController country = TextEditingController();
 
-  // void configLoading() {
-  //   EasyLoading.instance
-  //     ..displayDuration = const Duration(milliseconds: 2000)
-  //     ..indicatorType = EasyLoadingIndicatorType.fadingGrid
-  //     ..loadingStyle = EasyLoadingStyle.dark
-  //     ..indicatorSize = 45.0
-  //     ..radius = 10.0
-  //     ..progressColor = Colors.blue
-  //     ..backgroundColor = Colors.blue
-  //     ..indicatorColor = Colors.yellow
-  //     ..textColor = Colors.yellow
-  //     ..maskColor = Colors.blue.withOpacity(0.5)
-  //     ..userInteractions = true
-  //     ..dismissOnTap = false
-  //     ..customAnimation = CustomAnimation();
-  // }
-
   File? image;
   final _formKey = GlobalKey<FormState>();
   Timer? _timer;
@@ -107,7 +90,7 @@ class _ProfileState extends State<Profile> {
         _timer?.cancel();
       }
     });
-    context.read<LocationProvider>().currentUserPosition;
+    context.read<LocationProvider>().getCurrentAddress();
     super.initState();
   }
 
@@ -133,7 +116,7 @@ class _ProfileState extends State<Profile> {
           ),
           title: const Center(
             child: Text(
-              'Profile',
+              'My Profile',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.blueAccent,
@@ -739,7 +722,13 @@ class _ProfileState extends State<Profile> {
                                         const Spacer(),
                                         InkWell(
                                           onTap: () {
+                                            // if (address.text.isEmpty) {
                                             addressOnTap();
+                                            // } else {
+                                            //   context
+                                            //       .read<LocationProvider>()
+                                            //       .currentUserPosition;
+                                            // }
                                           },
                                           child: SvgPicture.asset(
                                             'images/location-crosshairs-solid.svg',
@@ -905,7 +894,7 @@ class _ProfileState extends State<Profile> {
                               ),
                             ),
                           ),
-                          //COUNTRY textfield
+                          //COUNTRY text field
                           Padding(
                             padding: const EdgeInsets.only(top: 2.0, bottom: 2),
                             child: Container(
@@ -1050,9 +1039,6 @@ class _ProfileState extends State<Profile> {
   addressOnTap() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
       context.read<CustomSnackBars>().setCustomSnackBar(
             title: 'Location!',
             message: 'Please Turn on Location.',
@@ -1060,22 +1046,63 @@ class _ProfileState extends State<Profile> {
             context: context,
           );
     } else {
-      if (address.text.toString() == 'null') {
-        context.read<LocationProvider>().currentUserPosition;
-        setState(() {
-          address.text =
-              context.read<LocationProvider>().serviceAddress.toString();
-          state.text = context.read<LocationProvider>().adminArea.toString();
-          city.text = context.read<LocationProvider>().locality.toString();
-          country.text =
-              context.read<LocationProvider>().countryName.toString();
-        });
-      } else {
+      print('upper else');
+      if (context.read<LocationProvider>().serviceAddress == null &&
+          address.text.isEmpty) {
+        print('add is empty & provider is also empty.');
         address.text =
-            context.read<LocationProvider>().serviceAddress.toString();
-        state.text = context.read<LocationProvider>().adminArea.toString();
-        city.text = context.read<LocationProvider>().locality.toString();
-        country.text = context.read<LocationProvider>().countryName.toString();
+            context.read<LocationProvider>().serviceAddress ?? 'loading';
+        state.text = context.read<LocationProvider>().adminArea ?? 'loading';
+        city.text = context.read<LocationProvider>().locality ?? 'loading';
+        country.text =
+            context.read<LocationProvider>().countryName ?? 'loading';
+        context.read<LocationProvider>().getCurrentAddress();
+        // setState(() {
+        Future.delayed(const Duration(seconds: 3), () {
+          address.text =
+              context.read<LocationProvider>().serviceAddress ?? 'loading';
+          state.text = context.read<LocationProvider>().adminArea ?? 'loading';
+          city.text = context.read<LocationProvider>().locality ?? 'loading';
+          country.text =
+              context.read<LocationProvider>().countryName ?? 'loading';
+        });
+        // });
+      } else if (context.read<LocationProvider>().serviceAddress == null &&
+          address.text.isNotEmpty) {
+        print('add is not empty & provider is empty.');
+        address.text =
+            context.read<LocationProvider>().serviceAddress ?? 'loading';
+        state.text = context.read<LocationProvider>().adminArea ?? 'loading';
+        city.text = context.read<LocationProvider>().locality ?? 'loading';
+        country.text =
+            context.read<LocationProvider>().countryName ?? 'loading';
+        context.read<LocationProvider>().getCurrentAddress();
+        Future.delayed(const Duration(seconds: 3), () {
+          address.text =
+              context.read<LocationProvider>().serviceAddress ?? 'loading';
+          state.text = context.read<LocationProvider>().adminArea ?? 'loading';
+          city.text = context.read<LocationProvider>().locality ?? 'loading';
+          country.text =
+              context.read<LocationProvider>().countryName ?? 'loading';
+        });
+      } else if (context.read<LocationProvider>().serviceAddress != null &&
+          address.text.isEmpty) {
+        print('add is empty & provider is not empty.');
+        address.text =
+            context.read<LocationProvider>().serviceAddress ?? 'loading';
+        state.text = context.read<LocationProvider>().adminArea ?? 'loading';
+        city.text = context.read<LocationProvider>().locality ?? 'loading';
+        country.text =
+            context.read<LocationProvider>().countryName ?? 'loading';
+      } else if (address.text.isNotEmpty &&
+          context.read<LocationProvider>().serviceAddress != null) {
+        print('add is not empty & provider is also not empty.');
+        address.text =
+            context.read<LocationProvider>().serviceAddress ?? 'loading';
+        state.text = context.read<LocationProvider>().adminArea ?? 'loading';
+        city.text = context.read<LocationProvider>().locality ?? 'loading';
+        country.text =
+            context.read<LocationProvider>().countryName ?? 'loading';
       }
     }
 
@@ -1103,7 +1130,6 @@ class _ProfileState extends State<Profile> {
       if (urlDownload.isNotEmpty) {
         _profileURL = urlDownload;
         EasyLoading.dismiss();
-        // image = null;
         saveOnPressed();
       }
       // Map<String, dynamic> ourData = {'Image': urlDownload};

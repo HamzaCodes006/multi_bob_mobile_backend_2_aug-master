@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:skilled_bob_app_web/Customer/category.dart';
 import 'package:skilled_bob_app_web/Customer/customer_construction_service_screen.dart';
@@ -19,8 +20,10 @@ import 'package:skilled_bob_app_web/Provider/provider_jobs_screen.dart';
 import 'package:skilled_bob_app_web/Provider/provider_profile_screen.dart';
 import 'package:skilled_bob_app_web/Provider/my_services_screen.dart';
 import 'package:skilled_bob_app_web/Providers/auth_provider.dart';
+import 'package:skilled_bob_app_web/Providers/chat_provider.dart';
 import 'package:skilled_bob_app_web/Providers/custom_snackbars.dart';
 import 'package:skilled_bob_app_web/Providers/location_provider.dart';
+import 'package:skilled_bob_app_web/Providers/my_favourite_provider.dart';
 import 'package:skilled_bob_app_web/Providers/profile_data.dart';
 import 'package:skilled_bob_app_web/Providers/service_provider.dart';
 import 'package:skilled_bob_app_web/authentication/authentication_check.dart';
@@ -38,6 +41,7 @@ import 'Provider/provider_dashboard.dart';
 import 'authentication/authentication_services.dart';
 import 'authentication/login_screen.dart';
 import 'firebase_options.dart';
+import 'isMobile/Post_Service_Screen_Mobile.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,14 +57,17 @@ Future<void> main() async {
         create: (_) => ServiceProvider(),
       ),
       ChangeNotifierProvider(
+        create: (_) => CustomSnackBars(),
+      ),
+      ChangeNotifierProvider(
         create: (_) => LocationProvider(),
       ),
       ChangeNotifierProvider(
-        create: (_) => CustomSnackBars(),
+        create: (_) => ChatProvider(),
       ),
-      // ChangeNotifierProvider(
-      //   create: (_) => ProfileData(),
-      // ),
+      ChangeNotifierProvider(
+        create: (_) => MyFavouriteProvider(),
+      ),
       Provider<ProfileData>(
         create: (_) => ProfileData(),
         child: const DashboardMobile(),
@@ -123,7 +130,7 @@ class MyApp extends StatelessWidget {
         PostServiceScreen.id: (context) => const PostServiceScreen(),
         ProviderJobsScreen.id: (context) => const ProviderJobsScreen(),
         Categories.id: (context) => const Categories(),
-        Request.id: (context) => const Request(),
+        // Request.id: (context) => const Request(),
         JobRequests.id: (context) => const JobRequests(),
         MyFavorites.id: (context) => const MyFavorites(),
         Dashboard.id: (context) => const Dashboard(),
@@ -132,12 +139,19 @@ class MyApp extends StatelessWidget {
         JobDetail.id: (context) => const JobDetail(),
         MyBookings.id: (context) => const MyBookings(),
         Profile.id: (context) => Profile(),
+        // PostServiceScreen.id: (context) =>
+        //     const PostServiceScreen(),
         CustomerVehicleServicesScreen.id: (context) =>
-            const CustomerVehicleServicesScreen(),
+            const CustomerVehicleServicesScreen(
+                serviceName: 'Cars & Motorbike Service'),
         CustomerConstructionServicesScreen.id: (context) =>
-            const CustomerConstructionServicesScreen(),
+            const CustomerConstructionServicesScreen(
+              serviceName: 'Construction & Painting',
+            ),
         CustomerITServicesScreen.id: (context) =>
-            const CustomerITServicesScreen(),
+            const CustomerITServicesScreen(
+              serviceName: 'Web, Computer & IT Service',
+            ),
         SomethingWentWrong.id: (context) => const SomethingWentWrong(),
       },
       builder: EasyLoading.init(),

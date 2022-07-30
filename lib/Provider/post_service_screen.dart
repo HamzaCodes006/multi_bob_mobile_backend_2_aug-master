@@ -5,7 +5,6 @@ import 'package:skilled_bob_app_web/responsive.dart';
 
 class PostServiceScreen extends StatefulWidget {
   static const String id = 'PostServiceScreen';
-
   const PostServiceScreen({Key? key}) : super(key: key);
 
   @override

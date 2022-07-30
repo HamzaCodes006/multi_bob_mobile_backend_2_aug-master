@@ -1,10 +1,42 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:skilled_bob_app_web/Chat/customer_chat_screen.dart';
 import 'package:skilled_bob_app_web/Customer/request_page.dart';
 import 'package:skilled_bob_app_web/Provider/my_services_screen.dart';
+import 'package:skilled_bob_app_web/Providers/chat_provider.dart';
+import 'package:skilled_bob_app_web/Providers/service_provider.dart';
 import 'package:skilled_bob_app_web/constant.dart';
 
+import '../Customer/customer_construction_service_screen.dart';
+import '../Customer/customer_feedback_screen.dart';
+import '../Customer/customer_it_service_screen.dart';
+import '../Customer/customer_vehicle_services_screen.dart';
+import '../Providers/my_favourite_provider.dart';
+
 class JobDetailPageMobile extends StatefulWidget {
-  const JobDetailPageMobile({Key? key}) : super(key: key);
+  String? jID;
+  String? jobName;
+  List? jobImages;
+  String? jobPrice;
+  String? jobDescription;
+  String? jobRating;
+  String? providerId;
+
+  JobDetailPageMobile({
+    Key? key,
+    this.jID,
+    this.jobPrice,
+    this.jobDescription,
+    this.jobName,
+    this.jobImages,
+    this.providerId,
+    this.jobRating,
+  }) : super(key: key);
+
+  // const JobDetailPageMobile({Key? key}) : super(key: key);
 
   @override
   _JobDetailPageMobileState createState() => _JobDetailPageMobileState();
@@ -12,15 +44,58 @@ class JobDetailPageMobile extends StatefulWidget {
 
 class _JobDetailPageMobileState extends State<JobDetailPageMobile> {
   bool favorite = false;
+  int selectedImage = 0;
+  String? name;
+  Map<String, dynamic>? providerData = {};
+
+  getMyFavListBool() {
+    FirebaseFirestore.instance
+        .collection("Favourite")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("MyFavourite")
+        .doc(widget.jID)
+        .get()
+        .then((value) => {
+              if (mounted)
+                {
+                  if (value.exists)
+                    {
+                      setState(
+                        () {
+                          favorite = value.get("myFavourite");
+                        },
+                      ),
+                    }
+                }
+            });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getProviderData();
+    getMyFavListBool();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    final _myFavProvider = Provider.of<MyFavouriteProvider>(context);
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
         extendBodyBehindAppBar: true,
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            context
+                .read<ChatProvider>()
+                .setProviderUidAndEmail(widget.providerId.toString());
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const CustomerChatScreen()));
+          },
           child: const Icon(Icons.chat),
         ),
         appBar: AppBar(
@@ -31,45 +106,49 @@ class _JobDetailPageMobileState extends State<JobDetailPageMobile> {
             color: Colors.blueAccent,
             icon: const Icon(
               Icons.arrow_back_ios_sharp,
-              color: Colors.white,
+              color: kDarkBlueColor,
               size: 26,
             ),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
-          title: const Center(
-            child: Text(
-              '',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontSize: 20,
-              ),
-            ),
-          ),
+          // title: const Center(
+          //   child: Text(
+          //     ,
+          //     textAlign: TextAlign.center,
+          //     style: TextStyle(
+          //       color: kDarkBlueColor,
+          //       fontWeight: FontWeight.w500,
+          //       fontSize: 20,
+          //     ),
+          //   ),
+          // ),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 15.0),
               child: IconButton(
                   onPressed: () {
                     setState(() {
-                      if (favorite == true) {
-                        setState(() {
-                          favorite = false;
-                        });
-                      } else {
-                        setState(() {
-                          favorite = true;
-                        });
-                      }
+                      favorite = !favorite;
                     });
+                    if (favorite == true) {
+                      _myFavProvider.addMyFavListData(
+                        myFavouriteId: widget.jID,
+                        myFavouriteImages: widget.jobImages,
+                        myFavouriteTitle: widget.jobName,
+                        myFavouritePrice: widget.jobPrice,
+                        myFavouriteDescription: widget.jobDescription,
+                        myFavouriteRating: widget.jobRating,
+                      );
+                    } else {
+                      _myFavProvider.deleteMyFavData(widget.jID!);
+                    }
                   },
                   icon: favorite == false
                       ? const Icon(
                           Icons.favorite_border,
-                          color: Colors.white,
+                          color: kDarkBlueColor,
                           size: 26,
                         )
                       : const Icon(
@@ -85,26 +164,87 @@ class _JobDetailPageMobileState extends State<JobDetailPageMobile> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                height: 270,
-                width: 400,
-                decoration: const BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.only(
-                      bottomRight: Radius.circular(50),
-                      bottomLeft: Radius.circular(50),
-                    )),
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    bottomRight: Radius.circular(40),
-                    bottomLeft: Radius.circular(40),
-                  ),
-                  child: Image.asset(
-                    'images/car service.jpg',
-                    fit: BoxFit.fill,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  // width: 238.0,
+                  child: AspectRatio(
+                    aspectRatio: 0.9,
+                    child: Hero(
+                      // tag: widget.product.id.toString(),
+                      tag: widget.jID.toString(),
+                      transitionOnUserGestures: true,
+                      child: Image.network(
+                        widget.jobImages![selectedImage],
+                        fit: BoxFit.contain,
+                        // color: Colors.red,
+                        // width: double.infinity,
+                      ),
+                    ),
                   ),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ...List.generate(
+                            widget.jobImages!.length,
+                            (index) => GestureDetector(
+                                  onTap: () {
+                                    // FirebaseFirestore.instance.collection('Services').doc('car').collection('myServices').get
+                                    setState(() {
+                                      selectedImage = index;
+                                    });
+                                  },
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 250),
+                                    margin: const EdgeInsets.only(right: 15),
+                                    padding: const EdgeInsets.all(8),
+                                    height: 48,
+                                    width: 48,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                          color: kDarkBlueColor.withOpacity(
+                                              selectedImage == index ? 1 : 0)),
+                                    ),
+                                    child:
+                                        Image.network(widget.jobImages![index]),
+                                  ),
+                                )),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // Container(
+              //   height: 270,
+              //   width: 400,
+              //   decoration: const BoxDecoration(
+              //       color: Colors.blue,
+              //       borderRadius: BorderRadius.only(
+              //         bottomRight: Radius.circular(50),
+              //         bottomLeft: Radius.circular(50),
+              //       )),
+              //   child: ClipRRect(
+              //     borderRadius: const BorderRadius.only(
+              //       bottomRight: Radius.circular(40),
+              //       bottomLeft: Radius.circular(40),
+              //     ),
+              //     child: Image.asset(
+              //       'images/car service.jpg',
+              //       fit: BoxFit.fill,
+              //     ),
+              //   ),
+              // ),
+
+              //job title
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20.0,
@@ -127,9 +267,9 @@ class _JobDetailPageMobileState extends State<JobDetailPageMobile> {
                             padding: const EdgeInsets.all(8.0),
                             child: SizedBox(
                               width: MediaQuery.of(context).size.width / 1.17,
-                              child: const Text(
-                                'Kala Khela PO Pir Baba Tehsil in Daggar District',
-                                style: TextStyle(
+                              child: Text(
+                                widget.jobName!,
+                                style: const TextStyle(
                                   color: Colors.black87,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 23,
@@ -227,7 +367,7 @@ class _JobDetailPageMobileState extends State<JobDetailPageMobile> {
                   vertical: 0,
                 ),
                 child: Text(
-                  'Kala Khela PO Pir Baba Tehsil Daggar District Kala Khela PO Pir Baba Tehsil Daggar District Kala Khela PO Pir Baba Tehsil Daggar District Kala Khela PO Pir Baba Tehsil Daggar District Kala Khela PO Pir Baba Tehsil Daggar District',
+                  widget.jobDescription!,
                   style: kNormalText,
                   textAlign: TextAlign.justify,
                 ),
@@ -471,12 +611,17 @@ class _JobDetailPageMobileState extends State<JobDetailPageMobile> {
                           children: [
                             CircleAvatar(
                               child: ClipRRect(
-                                child: Image.asset(
-                                  'images/profile picture.jfif',
-                                  fit: BoxFit.cover,
-                                ),
+                                child: providerData!['profileURL'] == null
+                                    ? Image.asset(
+                                        'images/profile picture.jfif',
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Image.network(
+                                        providerData!['profileURL'].toString(),
+                                        fit: BoxFit.cover,
+                                      ),
                                 borderRadius: const BorderRadius.all(
-                                  Radius.circular(50),
+                                  Radius.circular(20),
                                 ),
                               ),
                               backgroundColor: Colors.black87,
@@ -489,10 +634,16 @@ class _JobDetailPageMobileState extends State<JobDetailPageMobile> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Usama Ali',
+                                  providerData!['userName'].toString(),
                                   style: kBoldText.copyWith(fontSize: 16),
                                 ),
-                                const Text('Flutter Developer'),
+                                SizedBox(
+                                    width: 200,
+                                    child: Text(
+                                      providerData!['address'].toString(),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    )),
                               ],
                             ),
                           ],
@@ -517,29 +668,30 @@ class _JobDetailPageMobileState extends State<JobDetailPageMobile> {
                   textAlign: TextAlign.justify,
                 ),
               ),
+              //categories
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    //car and bike services container
+                    //Vehicle services container
                     Padding(
-                      padding: const EdgeInsets.only(
-                        top: 8.0,
-                        bottom: 8.0,
-                        left: 30.0,
-                        right: 15.0,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8.0,
+                        horizontal: 15.0,
                       ),
                       child: InkWell(
                         onTap: () {
-                          Navigator.pushReplacement(
+                          Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      const MyServicesScreen()));
+                                      const CustomerVehicleServicesScreen(
+                                        serviceName: 'Cars & Motorbike Service',
+                                      )));
                         },
                         child: Container(
-                          width: 170,
-                          height: 150,
+                          width: 210,
+                          height: 180,
                           decoration: BoxDecoration(
                             boxShadow: [
                               BoxShadow(
@@ -560,9 +712,9 @@ class _JobDetailPageMobileState extends State<JobDetailPageMobile> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
+                              SizedBox(
                                 width: 210,
-                                height: 100,
+                                height: 130,
                                 child: ClipRRect(
                                   borderRadius: const BorderRadius.only(
                                     //topLeft: Radius.circular(10),
@@ -582,22 +734,19 @@ class _JobDetailPageMobileState extends State<JobDetailPageMobile> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: const [
-                                    Padding(
-                                      padding: EdgeInsets.all(0),
-                                      child: Text(
-                                        'Service',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black87,
-                                          //fontFamily: 'Dongle',
-                                        ),
+                                    Text(
+                                      'Vehicle Services',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black87,
+                                        //fontFamily: 'Dongle',
                                       ),
                                     ),
                                     Text(
-                                      'Car & Bike Services',
+                                      'Cars & Motorbike Service',
                                       style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 13,
                                         //color: Colors.white,
                                         //fontWeight: FontWeight.bold,
                                         color: Colors.black87,
@@ -619,15 +768,17 @@ class _JobDetailPageMobileState extends State<JobDetailPageMobile> {
                       ),
                       child: InkWell(
                         onTap: () {
-                          Navigator.pushReplacement(
+                          Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      const MyServicesScreen()));
+                                      const CustomerConstructionServicesScreen(
+                                        serviceName: 'Construction & Painting',
+                                      )));
                         },
                         child: Container(
-                          width: 170,
-                          height: 150,
+                          width: 210,
+                          height: 180,
                           decoration: BoxDecoration(
                             boxShadow: [
                               BoxShadow(
@@ -651,7 +802,7 @@ class _JobDetailPageMobileState extends State<JobDetailPageMobile> {
                             children: [
                               Container(
                                 width: 210,
-                                height: 100,
+                                height: 130,
                                 child: ClipRRect(
                                   borderRadius: const BorderRadius.only(
                                     //topLeft: Radius.circular(10),
@@ -672,18 +823,19 @@ class _JobDetailPageMobileState extends State<JobDetailPageMobile> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: const [
                                     Text(
-                                      'Painting',
+                                      'Construction',
                                       style: TextStyle(
                                         fontSize: 18,
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.bold,
                                         color: Colors.black87,
                                       ),
                                     ),
                                     Text(
-                                      'Wall Painting Services',
+                                      'Construction & Painting',
+                                      overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                        fontSize: 14, color: Colors.black87,
-                                        //fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                        color: Colors.black87,
                                       ),
                                     ),
                                   ],
@@ -702,23 +854,26 @@ class _JobDetailPageMobileState extends State<JobDetailPageMobile> {
                       ),
                       child: InkWell(
                         onTap: () {
-                          Navigator.pushReplacement(
+                          Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      const MyServicesScreen()));
+                                      const CustomerITServicesScreen(
+                                        serviceName:
+                                            'Web, Computer & IT Service',
+                                      )));
                         },
                         child: Container(
-                          width: 170,
-                          height: 150,
+                          width: 210,
+                          height: 180,
                           decoration: BoxDecoration(
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.5),
                                 spreadRadius: 2,
                                 blurRadius: 2,
-                                offset:
-                                    Offset(4, 3), // changes position of shadow
+                                offset: const Offset(
+                                    4, 3), // changes position of shadow
                               ),
                             ],
                             color: const Color(0xffE0F3FF),
@@ -732,9 +887,9 @@ class _JobDetailPageMobileState extends State<JobDetailPageMobile> {
                             //mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(
+                              Container(
                                 width: 210,
-                                height: 100,
+                                height: 130,
                                 child: ClipRRect(
                                   borderRadius: const BorderRadius.only(
                                     topLeft: Radius.circular(10),
@@ -755,16 +910,16 @@ class _JobDetailPageMobileState extends State<JobDetailPageMobile> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: const [
                                     Text(
-                                      'Web Designing',
+                                      'IT Service',
                                       style: TextStyle(
                                         fontSize: 18,
-                                        fontWeight: FontWeight.w500,
+                                        fontWeight: FontWeight.bold,
                                         //color: Colors.white,
                                         color: Colors.black87,
                                       ),
                                     ),
                                     Text(
-                                      'Web Design Services',
+                                      'Web, Computer & IT Service',
                                       style: TextStyle(
                                         fontSize: 14,
                                         color: Colors.black87,
@@ -804,15 +959,15 @@ class _JobDetailPageMobileState extends State<JobDetailPageMobile> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      const Text(
-                        '\$15',
-                        style: TextStyle(
+                      Text(
+                        '\$${widget.jobPrice!}',
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 26,
                         ),
                       ),
                       Text(
-                        '/per hour',
+                        '/hour',
                         style: kNormalText,
                       ),
                     ],
@@ -823,6 +978,16 @@ class _JobDetailPageMobileState extends State<JobDetailPageMobile> {
                     padding: const EdgeInsets.symmetric(horizontal: 28.0),
                     child: RaisedButton(
                       onPressed: () {
+                        context.read<ServiceProvider>().setServicesData(
+                              category: context
+                                  .read<ServiceProvider>()
+                                  .category
+                                  .toString(),
+                              title: widget.jobName,
+                              serviceUid: widget.jID,
+                              providerEmail: providerData!['email'].toString(),
+                              providerUid: widget.providerId,
+                            );
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -840,5 +1005,20 @@ class _JobDetailPageMobileState extends State<JobDetailPageMobile> {
         ),
       ),
     );
+  }
+
+  Future<void> getProviderData() async {
+    print('provider id: ${widget.providerId.toString()}');
+    Map<String, dynamic>? ProviderData = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(widget.providerId.toString())
+        .get()
+        .then((value) => value.data());
+    if (ProviderData != null) {
+      setState(() {
+        // name = ProviderData['userName'];
+        providerData = ProviderData;
+      });
+    }
   }
 }

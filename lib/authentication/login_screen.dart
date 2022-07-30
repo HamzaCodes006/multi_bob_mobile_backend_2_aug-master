@@ -141,8 +141,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               decoration: InputDecoration(
                                 fillColor: Colors.blue[200]!.withOpacity(0.4),
                                 filled: true,
-                                //hoverColor: kDarkBlue.withOpacity(0.1),
-                                // helperText: 'Add Text',
                                 hintStyle: const TextStyle(
                                   fontSize: 17.0,
                                   color: Colors.grey,
@@ -167,7 +165,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   borderSide: BorderSide(
                                       color: Theme.of(context).primaryColor),
                                 ),
-                                // focusColor: kOrange,
                               ),
                               keyboardType: TextInputType.emailAddress,
                               textInputAction: TextInputAction.next,
@@ -240,7 +237,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   borderSide: BorderSide(
                                       color: Theme.of(context).primaryColor),
                                 ),
-                                // focusColor: kOrange,
                               ),
                               keyboardType: TextInputType.text,
                               textInputAction: TextInputAction.next,
@@ -379,14 +375,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                             context: context,
                                           );
                                     } else {
-                                      context
-                                          .read<CustomSnackBars>()
-                                          .setCustomSnackBar(
-                                            title: 'Oh Snap!',
-                                            message: value.toString(),
-                                            contentType: ContentType.failure,
-                                            context: context,
-                                          );
+                                      print('logged in');
+                                      // context
+                                      //     .read<CustomSnackBars>()
+                                      //     .setCustomSnackBar(
+                                      //       title: 'Oh Snap!',
+                                      //       message: value.toString(),
+                                      //       contentType: ContentType.failure,
+                                      //       context: context,
+                                      //     );
                                     }
                                   });
                                   // setState(() {

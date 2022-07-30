@@ -3,20 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:skilled_bob_app_web/Customer/request_page.dart';
 import 'package:skilled_bob_app_web/constant.dart';
 import '../constant.dart';
+import 'job_detail_page.dart';
 
 class CustomerITServicesScreen extends StatefulWidget {
   static const String id = 'CustomerITServicesScreen';
-
-  const CustomerITServicesScreen({Key? key}) : super(key: key);
+  final String serviceName;
+  const CustomerITServicesScreen({Key? key, required this.serviceName})
+      : super(key: key);
 
   @override
   _CustomerITServicesScreenState createState() =>
       _CustomerITServicesScreenState();
 }
 
-class _CustomerITServicesScreenState
-    extends State<CustomerITServicesScreen> {
+class _CustomerITServicesScreenState extends State<CustomerITServicesScreen> {
   bool isFavourite = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,16 +50,21 @@ class _CustomerITServicesScreenState
             child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('Services')
-                    .where('serviceCategory',
-                    isEqualTo: 'Web, Computer & IT Service')
+                    .doc(widget.serviceName.toString())
+                    .collection('myServices')
+                    // .where('serviceCategory',
+                    // isEqualTo: 'Web, Computer & IT Service')
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return const Center(
                         child: CircularProgressIndicator(
-                          color: kDarkBlueColor,
-                        ));
+                      color: kDarkBlueColor,
+                    ));
                   }
+                  final List uId = snapshot.data!.docs.map((e) {
+                    return e.id;
+                  }).toList();
                   final List serviceTitle = snapshot.data!.docs.map((e) {
                     return e['serviceTitle'];
                   }).toList();
@@ -67,6 +79,9 @@ class _CustomerITServicesScreenState
                   }).toList();
                   final List serviceURL = snapshot.data!.docs.map((e) {
                     return e['serviceURL'];
+                  }).toList();
+                  final List providerId = snapshot.data!.docs.map((e) {
+                    return e['providerId'];
                   }).toList();
                   // final List productId = snapshot.data.docs.map((e) {
                   //   return e.id;
@@ -87,7 +102,16 @@ class _CustomerITServicesScreenState
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const Request(),
+                                    builder: (context) => JobDetail(
+                                      jID: uId[index],
+                                      jobDescription: serviceDescription[index],
+                                      jobImages: serviceURL[index],
+                                      jobName: serviceTitle[index],
+                                      jobPrice: servicePrice[index].toString(),
+                                      providerId: providerId[index],
+                                      jobRating:
+                                          serviceRating[index].toString(),
+                                    ),
                                   ),
                                 );
                               },
@@ -117,7 +141,7 @@ class _CustomerITServicesScreenState
                                         tag: '',
                                         child: ClipRRect(
                                           borderRadius:
-                                          BorderRadius.circular(10.0),
+                                              BorderRadius.circular(10.0),
                                           child: Image.network(
                                             serviceURL[index][0],
                                             height: 80,
@@ -128,8 +152,8 @@ class _CustomerITServicesScreenState
                                       ),
                                       Padding(
                                         // ignore: prefer_const_constructors
-                                        padding:
-                                        EdgeInsets.symmetric(vertical: 8.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
                                         child: Text(
                                           'Hourly Rate',
                                           style: kBodyTextBlack.copyWith(
@@ -152,7 +176,7 @@ class _CustomerITServicesScreenState
                                                         height: 1.4,
                                                         fontSize: 16,
                                                         fontWeight:
-                                                        FontWeight.bold))),
+                                                            FontWeight.bold))),
                                             IconButton(
                                                 onPressed: () {
                                                   setState(() {
@@ -162,7 +186,7 @@ class _CustomerITServicesScreenState
                                                 icon: isFavourite
                                                     ? const Icon(Icons.favorite)
                                                     : const Icon(
-                                                    Icons.favorite_border))
+                                                        Icons.favorite_border))
                                             // BookingOptionsPopupMenuWidget()
                                           ]),
                                           const Divider(
@@ -171,49 +195,49 @@ class _CustomerITServicesScreenState
                                           ),
                                           Row(
                                               mainAxisAlignment:
-                                              MainAxisAlignment
-                                                  .spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Wrap(
                                                     crossAxisAlignment:
-                                                    WrapCrossAlignment
-                                                        .center,
+                                                        WrapCrossAlignment
+                                                            .center,
                                                     spacing: 5,
                                                     children: [
                                                       SizedBox(
                                                           height: 32,
                                                           child: Chip(
                                                               padding:
-                                                              const EdgeInsets.all(
-                                                                  0),
+                                                                  const EdgeInsets.all(
+                                                                      0),
                                                               label: Row(
                                                                   mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
+                                                                      MainAxisAlignment
+                                                                          .center,
                                                                   children: <
                                                                       Widget>[
                                                                     const Icon(
                                                                         Icons
                                                                             .star,
                                                                         color:
-                                                                        kLightBlue,
+                                                                            kLightBlue,
                                                                         size:
-                                                                        16),
+                                                                            16),
                                                                     Text(
-                                                                        serviceRating[
-                                                                        index],
+                                                                        serviceRating[index]
+                                                                            .toString(),
                                                                         style: const TextStyle(
                                                                             color:
-                                                                            kLightBlue,
+                                                                                kLightBlue,
                                                                             height:
-                                                                            1.4))
+                                                                                1.4))
                                                                   ]),
                                                               backgroundColor:
-                                                              kLightBlue
-                                                                  .withOpacity(
-                                                                  0.15),
+                                                                  kLightBlue
+                                                                      .withOpacity(
+                                                                          0.15),
                                                               shape:
-                                                              const StadiumBorder())),
+                                                                  const StadiumBorder())),
                                                       const Text('(44)',
                                                           style: TextStyle(
                                                               color: kLightBlue,
@@ -230,12 +254,12 @@ class _CustomerITServicesScreenState
                                               height: 6, thickness: 0.5),
                                           Column(
                                             crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                                CrossAxisAlignment.start,
                                             children: [
                                               const Text('Description',
                                                   maxLines: 1,
                                                   overflow:
-                                                  TextOverflow.ellipsis,
+                                                      TextOverflow.ellipsis,
                                                   style: TextStyle(
                                                       fontSize: 17.0,
                                                       color: Colors.black87)),
