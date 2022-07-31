@@ -138,10 +138,9 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
                           'senderProfileURL':
                               documents['profileURL'].toString(),
                           'receiverProfileURL': context
-                                  .read<ChatProvider>()
-                                  .providerProfileURL
-                                  .toString() ??
-                              'default',
+                              .read<ChatProvider>()
+                              .providerProfileURL
+                              .toString(),
                         });
                       }
                     },

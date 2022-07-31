@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "433553365514-qfhv5chbts3kn1522k4g4d1e60htqcup.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.skilled_bob_app_web",
+            "certificate_hash": "d19b853840d9d2e0ae7c227ed9bc1d31e2ad0331"
+          }
+        },
+        {
           "client_id": "433553365514-hu935mrt7c8mam13984i92o7t6kpp1o2.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +37,13 @@
             {
               "client_id": "433553365514-hu935mrt7c8mam13984i92o7t6kpp1o2.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "433553365514-4v3hkomt827fjp3rcmrm38jfo2stio1f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.skilledBobAppWeb"
+              }
             }
           ]
         }

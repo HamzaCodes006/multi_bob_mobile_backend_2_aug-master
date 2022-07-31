@@ -116,6 +116,43 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  //Save user data to DB
+  Future<void> saveGoogleUserDataToDB({
+    required String userName,
+    required String email,
+    required String password,
+    required String profileURl,
+    required String mobileNumber,
+    // bool shopCreated,
+  }) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      DocumentReference _users =
+          FirebaseFirestore.instance.collection('Users').doc(user?.uid);
+      _users
+          .set({
+            'userName': userName,
+            'email': email,
+            'password': password,
+            'firstName': '',
+            'lastName': '',
+            'mobileNumber': mobileNumber.toString(),
+            'telephoneNumber': '',
+            'address': '',
+            'city': '',
+            'state': '',
+            'country': '',
+            'profileURL': profileURl,
+            'provider': false,
+          })
+          .then((value) => print('User Added Successfully!!'))
+          .catchError((onError) {
+            print('User Not added Successfully!!');
+          });
+    } catch (e) {
+      print("product added exception is:::::::::::::::::: $e");
+    }
+  }
   // //Update buyer data to DB
   // Future<void> updateBuyerDataToDB({
   //   String shopCategory,

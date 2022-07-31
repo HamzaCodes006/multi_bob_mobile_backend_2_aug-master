@@ -40,7 +40,6 @@ dependencies:
   badges: ^2.0.1
   flutter_svg: ^1.0.3
   flutter_easyloading: ^3.0.5
-  multi_image_picker2: ^5.0.2
   flutter_rating_bar: ^4.0.1
   google_fonts: ^3.0.1
   firebase_core: ^1.19.1
@@ -48,6 +47,7 @@ dependencies:
   email_validator: ^2.0.1
   modal_progress_hud_nsn: ^0.2.1
   firebase_auth: ^3.1.5
+  google_sign_in: ^5.4.0
   cloud_firestore: ^3.0.0
   provider: ^6.0.1
   shared_preferences: ^2.0.13

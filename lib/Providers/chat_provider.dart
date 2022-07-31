@@ -38,9 +38,11 @@ class ChatProvider extends ChangeNotifier {
     var docSnapshot = await customerCollection.doc(Uid).get();
     if (docSnapshot.exists) {
       Map<String, dynamic>? data = docSnapshot.data();
-      _customerEmail = data!['email'];
-      _customerName = data!['userName'];
-      _customerProfileURL = data!['profileURL'];
+      if (data != null) {
+        _customerEmail = data['email'];
+        _customerName = data['userName'];
+        _customerProfileURL = data['profileURL'];
+      }
     }
     notifyListeners();
   }
@@ -50,9 +52,11 @@ class ChatProvider extends ChangeNotifier {
     var docSnapshot = await customerCollection.doc(Uid).get();
     if (docSnapshot.exists) {
       Map<String, dynamic>? data = docSnapshot.data();
-      _providerEmail = data!['email'];
-      _providerName = data!['userName'];
-      _providerProfileURL = data!['profileURL'];
+      if (data != null) {
+        _providerEmail = data['email'];
+        _providerName = data['userName'];
+        _providerProfileURL = data['profileURL'];
+      }
     }
     notifyListeners();
   }

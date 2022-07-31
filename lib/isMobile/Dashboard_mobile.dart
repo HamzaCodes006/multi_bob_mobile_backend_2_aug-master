@@ -43,15 +43,15 @@ class _DashboardMobileState extends State<DashboardMobile> {
                 iconTheme: const IconThemeData(color: Colors.white),
                 shadowColor: Colors.transparent,
                 backgroundColor: Colors.blue,
-                title: const Center(
-                  child: Text(
-                    'Dashboard',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 20,
-                    ),
+                centerTitle: true,
+                titleSpacing: 0,
+                title: const Text(
+                  'Dashboard',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20,
                   ),
                 ),
                 leading: IconButton(
@@ -65,28 +65,6 @@ class _DashboardMobileState extends State<DashboardMobile> {
                     Navigator.pushNamed(context, IndexPage.id);
                   },
                 ),
-                actions: const [
-                  // Padding(
-                  //   padding: const EdgeInsets.only(right: 15.0),
-                  //   child: CircleAvatar(
-                  //     child:
-                  //         context.read<ProfileData>().profileURL.toString() == '' ||
-                  //                 context.read<ProfileData>().profileURL.toString() ==
-                  //                     'default'
-                  //             ? const Icon(
-                  //                 Icons.person,
-                  //                 size: 30,
-                  //               )
-                  //             : Image.network(
-                  //                 context.read<ProfileData>().profileURL.toString(),
-                  //                 color: Colors.transparent,
-                  //                 height: 30,
-                  //                 width: 26,
-                  //               ),
-                  //     backgroundColor: Colors.transparent,
-                  //   ),
-                  // ),
-                ],
               ),
               body: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -638,7 +616,7 @@ class _DashboardMobileState extends State<DashboardMobile> {
                           child: documents['profileURL'] == 'default'
                               ? const Icon(
                                   Icons.person,
-                                  size: 50,
+                                  size: 60,
                                   color: Colors.grey,
                                 )
                               : Image.network(

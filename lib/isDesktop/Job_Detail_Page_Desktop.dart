@@ -5,7 +5,6 @@ import 'package:skilled_bob_app_web/Customer/dashboard.dart';
 import 'package:skilled_bob_app_web/Customer/post_a_request_customer.dart';
 import 'package:skilled_bob_app_web/Provider/my_services_screen.dart';
 import 'package:skilled_bob_app_web/constant.dart';
-import 'package:multi_image_picker2/multi_image_picker2.dart';
 import '../Customer/category.dart';
 import '../hover.dart';
 
@@ -17,16 +16,16 @@ class JobDetailPageDesktop extends StatefulWidget {
 }
 
 class _JobDetailPageDesktopState extends State<JobDetailPageDesktop> {
-  int initial_page = 0;
+  int initialPage = 0;
   bool favorite = false;
-  List<Asset> images = <Asset>[];
-  String _error = 'No Error Dectected';
+  // List<Asset> images = <Asset>[];
+  // String _error = 'No Error Dectected';
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final pageController = PageController(initialPage: initial_page);
-    double screenWidth = MediaQuery.of(context).size.width;
+    final pageController = PageController(initialPage: initialPage);
+    // double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: false,
@@ -38,7 +37,7 @@ class _JobDetailPageDesktopState extends State<JobDetailPageDesktop> {
       ),
       appBar: const Appbar(),
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -150,17 +149,14 @@ class _JobDetailPageDesktopState extends State<JobDetailPageDesktop> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
+                        const Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Container(
-                            // width: MediaQuery.of(context).size.width / 1.17,
-                            child: const Text(
-                              'I will wash a car for you.',
-                              style: TextStyle(
-                                color: Colors.black87,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30,
-                              ),
+                          child: Text(
+                            'I will wash a car for you.',
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 30,
                             ),
                           ),
                         ),
@@ -196,36 +192,28 @@ class _JobDetailPageDesktopState extends State<JobDetailPageDesktop> {
                         Row(
                           // mainAxisAlignment:
                           // MainAxisAlignment.spaceBetween,
-                          children: [
+                          children: const [
                             Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Container(
-                                // alignment: Alignment.centerLeft,
-                                //width: MediaQuery.of(context).size.width / 1.17,
-                                child: const Icon(
-                                  Icons.star,
-                                  size: 18.0,
-                                  color: Colors.orange,
-                                ),
+                              padding: EdgeInsets.all(4.0),
+                              child: Icon(
+                                Icons.star,
+                                size: 18.0,
+                                color: Colors.orange,
                               ),
                             ),
-                            const Text('4.2 (3)'),
+                            Text('4.2 (3)'),
                           ],
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
-                            children: [
-                              Container(
-                                // width: screenWidth / 1.7,
-                                // alignment: Alignment.centerRight,
-                                child: const Text(
-                                  'Distance : ',
-                                  style: TextStyle(fontWeight: FontWeight.w500),
-                                  textAlign: TextAlign.right,
-                                ),
+                            children: const [
+                              Text(
+                                'Distance : ',
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                                textAlign: TextAlign.right,
                               ),
-                              const Text(
+                              Text(
                                 ' 30 km',
                                 style: TextStyle(fontWeight: FontWeight.w500),
                               ),
@@ -241,12 +229,12 @@ class _JobDetailPageDesktopState extends State<JobDetailPageDesktop> {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Container(
+                          child: SizedBox(
                             width: size.width * 0.3,
                             child: Text(
                               'Post and describe the task to be done totally for Free! Sit back and the pool of Multi Bob`s'
-                              ' will respond with bids and offers.See the profile, skills, and ratings, from your preferred'
-                              ' Bob. Make your personal decision which professional service provider you hire.'
+                              'will respond with bids and offers.See the profile, skills, and ratings, from your preferred'
+                              'Bob. Make your personal decision which professional service provider you hire.'
                               'Now relax and let the Multibob do his job. Please rate him and get ready for your '
                               'next job post.',
                               style: kNormalText,
@@ -783,7 +771,7 @@ class _JobDetailPageDesktopState extends State<JobDetailPageDesktop> {
                                       'images/profile picture.jfif',
                                       fit: BoxFit.cover,
                                     ),
-                                    borderRadius: BorderRadius.all(
+                                    borderRadius: const BorderRadius.all(
                                       Radius.circular(50),
                                     ),
                                   ),
@@ -825,19 +813,17 @@ class _JobDetailPageDesktopState extends State<JobDetailPageDesktop> {
                     horizontal: 30.0,
                     vertical: 10,
                   ),
-                  child: Container(
-                    child: Text(
-                      'Recommended For You',
-                      style: kBoldText,
-                      textAlign: TextAlign.justify,
-                    ),
+                  child: Text(
+                    'Recommended For You',
+                    style: kBoldText,
+                    textAlign: TextAlign.justify,
                   ),
                 ),
               ],
             ),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              physics: BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               child: Row(
                 children: List.generate(15, (index) {
                   return Padding(
@@ -864,8 +850,8 @@ class _JobDetailPageDesktopState extends State<JobDetailPageDesktop> {
                               color: Colors.grey.withOpacity(0.5),
                               spreadRadius: 2,
                               blurRadius: 2,
-                              offset:
-                                  Offset(4, 3), // changes position of shadow
+                              offset: const Offset(
+                                  4, 3), // changes position of shadow
                             ),
                           ],
                           //color: Colors.white70.withOpacity(0.7),
@@ -879,7 +865,7 @@ class _JobDetailPageDesktopState extends State<JobDetailPageDesktop> {
                           //mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
+                            SizedBox(
                               width: 210,
                               height: 130,
                               child: ClipRRect(
@@ -1351,11 +1337,11 @@ class _JobDetailPageDesktopState extends State<JobDetailPageDesktop> {
                           ),
                         ],
                       ),
-                      SizedBox(width: 10.0),
+                      const SizedBox(width: 10.0),
                       Row(
                         children: [
                           IconButton(
-                              icon: Icon(FontAwesomeIcons.instagram),
+                              icon: const Icon(FontAwesomeIcons.instagram),
                               tooltip: 'Instagram',
                               color: kLightBlue,
                               onPressed: () {}),

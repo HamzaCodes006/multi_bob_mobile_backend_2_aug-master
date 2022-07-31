@@ -80,7 +80,7 @@ class _IndexPageMobileState extends State<IndexPageMobile> {
     Map<String, dynamic>? documents =
         Provider.of<Map<String, dynamic>?>(context);
     Size size = MediaQuery.of(context).size;
-    print(documents!['profileURL'].toString());
+    // print(documents!['profileURL'].toString());
     return documents != null
         ? SafeArea(
             child: Scaffold(

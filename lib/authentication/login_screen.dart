@@ -279,17 +279,25 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              CircleAvatar(
-                                backgroundImage:
-                                    AssetImage('images/google.png'),
-                                radius: 20,
-                                backgroundColor: Colors.white,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  context
+                                      .read<AuthenticationService>()
+                                      .signInWithGoogle(context)
+                                      .whenComplete(() => null);
+                                },
+                                child: const CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage('images/google.png'),
+                                  radius: 20,
+                                  backgroundColor: Colors.white,
+                                ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 10,
                               ),
-                              CircleAvatar(
+                              const CircleAvatar(
                                 backgroundImage:
                                     AssetImage('images/facebook.png'),
                                 radius: 20,
@@ -356,6 +364,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                           context: context)
                                       .then((value) {
                                     if (value == 'user-not-found') {
+                                      setState(() {
+                                        _savingg = false;
+                                      });
                                       context
                                           .read<CustomSnackBars>()
                                           .setCustomSnackBar(
@@ -366,6 +377,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                             context: context,
                                           );
                                     } else if (value == 'wrong-password') {
+                                      setState(() {
+                                        _savingg = false;
+                                      });
                                       context
                                           .read<CustomSnackBars>()
                                           .setCustomSnackBar(
@@ -375,6 +389,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                             context: context,
                                           );
                                     } else {
+                                      setState(() {
+                                        _savingg = false;
+                                      });
                                       print('logged in');
                                       // context
                                       //     .read<CustomSnackBars>()

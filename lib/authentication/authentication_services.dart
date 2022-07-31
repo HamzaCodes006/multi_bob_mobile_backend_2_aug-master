@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:skilled_bob_app_web/Customer/index_page.dart';
 import 'package:skilled_bob_app_web/Providers/auth_provider.dart';
@@ -97,6 +99,64 @@ class AuthenticationService {
       );
 
       return e.message;
+    }
+  }
+
+  // GOOGLE SIGN IN
+  Future<void> signInWithGoogle(BuildContext context) async {
+    try {
+      if (kIsWeb) {
+        GoogleAuthProvider googleProvider = GoogleAuthProvider();
+
+        googleProvider
+            .addScope('https://www.googleapis.com/auth/contacts.readonly');
+
+        await _firebaseAuth.signInWithPopup(googleProvider);
+      } else {
+        final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+        final GoogleSignInAuthentication? googleAuth =
+            await googleUser?.authentication;
+
+        if (googleAuth?.accessToken != null && googleAuth?.idToken != null) {
+          // Create a new credential
+          final credential = GoogleAuthProvider.credential(
+            accessToken: googleAuth?.accessToken,
+            idToken: googleAuth?.idToken,
+          );
+          UserCredential userCredential =
+              await _firebaseAuth.signInWithCredential(credential);
+
+          // if you want to do specific task like storing information in firestore
+          // only for new users using google sign in (since there are no two options
+          // for google sign in and google sign up, only one as of now),
+          // do the following:
+
+          if (userCredential.user != null) {
+            if (userCredential.additionalUserInfo!.isNewUser) {
+              context.read<AuthProvider>().saveGoogleUserDataToDB(
+                    userName: userCredential.user!.displayName.toString(),
+                    email: userCredential.user!.email.toString(),
+                    password: '123456',
+                    mobileNumber: userCredential.user!.phoneNumber.toString(),
+                    profileURl: userCredential.user!.photoURL.toString(),
+                  );
+            }
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const IndexPage()),
+            );
+          }
+        }
+      }
+    } on FirebaseAuthException catch (e) {
+      context.read<CustomSnackBars>().setCustomSnackBar(
+            title: 'Error',
+            message: e.message.toString(),
+            contentType: ContentType.failure,
+            context: context,
+          );
+      // showSnackBar(context, e.message!); // Displaying the error message
     }
   }
 }
