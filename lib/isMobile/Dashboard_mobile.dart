@@ -40,7 +40,9 @@ class _DashboardMobileState extends State<DashboardMobile> {
             child: Scaffold(
               backgroundColor: Colors.white70.withOpacity(0.96),
               appBar: AppBar(
-                iconTheme: const IconThemeData(color: Colors.white),
+                iconTheme: const IconThemeData(
+                  color: Colors.white,
+                ),
                 shadowColor: Colors.transparent,
                 backgroundColor: Colors.blue,
                 centerTitle: true,

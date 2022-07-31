@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -99,6 +98,7 @@ class _PostARequestCustomerMobileState
 
   @override
   Widget build(BuildContext context) {
+    print(jobCategory);
     final _locationProvider = Provider.of<LocationProvider>(context);
     Map<String, dynamic>? documents =
         Provider.of<Map<String, dynamic>?>(context);
@@ -176,7 +176,6 @@ class _PostARequestCustomerMobileState
                                     width: MediaQuery.of(context).size.width *
                                         0.70,
                                     child: DropdownButtonFormField<String>(
-                                      // focusColor: Colors.red,
                                       isExpanded: false,
                                       dropdownColor: Colors.white,
                                       itemHeight: 60.0,
@@ -187,30 +186,25 @@ class _PostARequestCustomerMobileState
                                           color: Colors.blue,
                                         ),
                                       ),
-                                      // value: jobCategory,
-                                      // icon: const Padding(
-                                      //   padding: EdgeInsets.symmetric(
-                                      //       horizontal: 0.0),
-                                      //   child: Icon(
-                                      //     Icons
-                                      //         .keyboard_arrow_down_outlined,
-                                      //     color: kLightBlue,
-                                      //     size: 22,
-                                      //   ),
-                                      // ),
-                                      // // underline: const SizedBox(),
-                                      // iconSize: 20.0,
+                                      value: jobCategory,
                                       style: kBodyText,
                                       onChanged: (String? newValue) {
-                                        // setState(() {
-                                        jobCategory = newValue;
-                                        // });
+                                        print('oncahanged');
+                                        setState(() {
+                                          jobCategory = newValue;
+                                          print('oncahanged');
+                                        });
                                       },
-                                      value: jobCategory,
+
                                       validator: (value) {
+                                        print('validator uo');
                                         if (value == null || value.isEmpty) {
+                                          print('validator in the IF');
                                           return 'Please Select Any Category!';
                                         }
+                                        // setState(() {
+                                        //   jobCategory = value;
+                                        // });
                                         return null;
                                       },
                                       // newValue // selectedItemBuilder: (BuildContext context) {
@@ -226,9 +220,10 @@ class _PostARequestCustomerMobileState
                                               (String value) {
                                         return DropdownMenuItem<String>(
                                           onTap: () {
-                                            // setState(() {
-                                            jobCategory = value;
-                                            // });
+                                            print('on tap');
+                                            setState(() {
+                                              jobCategory = value;
+                                            });
                                           },
                                           alignment: Alignment.center,
                                           value: value,
@@ -369,7 +364,6 @@ class _PostARequestCustomerMobileState
                               borderSide: BorderSide(
                                   color: Theme.of(context).primaryColor),
                             ),
-                            // focusColor: kOrange,
                           ),
                           keyboardType: TextInputType.text,
                           textInputAction: TextInputAction.next,
