@@ -252,6 +252,7 @@ class _PostARequestCustomerMobileState
                           onTap: getImage,
                           child: Container(
                             width: size.width,
+                            // hjshdssd
                             height: size.height * 0.13,
                             decoration: BoxDecoration(
                               color: Colors.blue[200]!.withOpacity(0.4),
