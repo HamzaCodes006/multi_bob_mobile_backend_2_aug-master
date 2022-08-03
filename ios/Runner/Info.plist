@@ -11,7 +11,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Skilled Bob</string>
+	<string>Multi Bob</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -27,12 +27,17 @@
     		<string>Editor</string>
     		<key>CFBundleURLSchemes</key>
     		<array>
-    			<!-- TODO Replace this value: -->
-    			<!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
     			<string>com.googleusercontent.apps.433553365514-4v3hkomt827fjp3rcmrm38jfo2stio1f</string>
+    			<string>fb722342258860819</string>
     		</array>
     	</dict>
     </array>
+    <key>FacebookAppID</key>
+    <string>722342258860819</string>
+    <key>FacebookClientToken</key>
+    <string>df5351ace666b0cca292989cd3be4c5e</string>
+    <key>FacebookDisplayName</key>
+    <string>Multi Bob</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

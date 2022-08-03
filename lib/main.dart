@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:skilled_bob_app_web/Customer/category.dart';
@@ -45,9 +46,18 @@ import 'isMobile/Post_Service_Screen_Mobile.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (kIsWeb) {
+    FacebookAuth.i.webInitialize(
+      appId: "722342258860819", // Replace with your app id
+      cookie: true,
+      xfbml: true,
+      version: "v12.0",
+    );
+  }
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(

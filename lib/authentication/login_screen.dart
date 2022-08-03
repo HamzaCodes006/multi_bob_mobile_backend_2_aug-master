@@ -297,11 +297,18 @@ class _LoginScreenState extends State<LoginScreen> {
                               const SizedBox(
                                 width: 10,
                               ),
-                              const CircleAvatar(
-                                backgroundImage:
-                                    AssetImage('images/facebook.png'),
-                                radius: 20,
-                                backgroundColor: Colors.white,
+                              InkWell(
+                                onTap: () {
+                                  context
+                                      .read<AuthenticationService>()
+                                      .signInWithFacebook(context);
+                                },
+                                child: const CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage('images/facebook.png'),
+                                  radius: 20,
+                                  backgroundColor: Colors.white,
+                                ),
                               ),
                             ],
                           ),

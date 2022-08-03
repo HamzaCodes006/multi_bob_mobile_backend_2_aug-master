@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Multi Bob</string>
+    <string name="facebook_app_id">722342258860819</string>
+    <string name="fb_login_protocol_scheme">fb722342258860819</string>
+    <string name="facebook_client_token">df5351ace666b0cca292989cd3be4c5e</string>
+</resources>

@@ -280,21 +280,16 @@ class _IndexPageMobileState extends State<IndexPageMobile> {
                                     'View all',
                                     style: TextStyle(
                                       color: Colors.blueAccent,
-                                      //fontStyle: FontStyle.italic,
-                                      // fontSize: 20,
                                     ),
                                   ),
                                   onTap: () {
                                     Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const ProviderJobsScreen()));
-                                    // Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //         builder: (context) =>
-                                    //             const Categories()));
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const Categories(),
+                                      ),
+                                    );
                                   },
                                 ),
                                 Transform.rotate(

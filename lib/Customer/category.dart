@@ -241,97 +241,101 @@ class _CategoriesState extends State<Categories> {
                 backgroundColor: Colors.transparent,
                 centerTitle: true,
                 titleSpacing: 0,
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          pageController.previousPage(
-                              duration: const Duration(milliseconds: 1000),
-                              curve: Curves.linearToEaseOut);
-                          locationBoxColor = true;
-                          listBoxColor = false;
-                        });
-                      },
-                      child: Container(
-                        width: 80,
-                        height: 45,
-                        decoration: BoxDecoration(
-                          color: locationBoxColor == true
-                              ? kDarkBlueColor
-                              : Colors.white,
-                          border: Border.all(
-                            width: 2,
-                            color: kDarkBlueColor,
-                          ),
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(30),
-                            topLeft: Radius.circular(30),
-                          ),
-                        ),
-                        child: Icon(
-                          Icons.location_on,
-                          color: locationBoxColor == true
-                              ? Colors.white
-                              : Colors.blue,
-                          size: 26,
-                        ),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        setState(() {
-                          pageController.nextPage(
-                              duration: const Duration(milliseconds: 1000),
-                              curve: Curves.linearToEaseOut);
-                          listBoxColor = true;
-                          locationBoxColor = false;
-                        });
-                      },
-                      child: Container(
-                        width: 80,
-                        height: 45,
-                        decoration: BoxDecoration(
-                          color: listBoxColor == true
-                              ? kDarkBlueColor
-                              : Colors.white,
-                          border: Border.all(
-                            width: 2,
-                            color: kDarkBlueColor,
-                          ),
-                          borderRadius: const BorderRadius.only(
-                            bottomRight: Radius.circular(30),
-                            topRight: Radius.circular(30),
-                          ),
-                        ),
-                        child: Icon(
-                          Icons.drag_handle_outlined,
-                          color:
-                              listBoxColor == true ? Colors.white : Colors.blue,
-                          size: 26,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                title: const Text('All Categories',
+                    style: TextStyle(
+                      color: Colors.blue,
+                    )),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     InkWell(
+                //       onTap: () {
+                //         setState(() {
+                //           pageController.previousPage(
+                //               duration: const Duration(milliseconds: 1000),
+                //               curve: Curves.linearToEaseOut);
+                //           locationBoxColor = true;
+                //           listBoxColor = false;
+                //         });
+                //       },
+                //       child: Container(
+                //         width: 80,
+                //         height: 45,
+                //         decoration: BoxDecoration(
+                //           color: locationBoxColor == true
+                //               ? kDarkBlueColor
+                //               : Colors.white,
+                //           border: Border.all(
+                //             width: 2,
+                //             color: kDarkBlueColor,
+                //           ),
+                //           borderRadius: const BorderRadius.only(
+                //             bottomLeft: Radius.circular(30),
+                //             topLeft: Radius.circular(30),
+                //           ),
+                //         ),
+                //         child: Icon(
+                //           Icons.location_on,
+                //           color: locationBoxColor == true
+                //               ? Colors.white
+                //               : Colors.blue,
+                //           size: 26,
+                //         ),
+                //       ),
+                //     ),
+                //     InkWell(
+                //       onTap: () {
+                //         setState(() {
+                //           pageController.nextPage(
+                //               duration: const Duration(milliseconds: 1000),
+                //               curve: Curves.linearToEaseOut);
+                //           listBoxColor = true;
+                //           locationBoxColor = false;
+                //         });
+                //       },
+                //       child: Container(
+                //         width: 80,
+                //         height: 45,
+                //         decoration: BoxDecoration(
+                //           color: listBoxColor == true
+                //               ? kDarkBlueColor
+                //               : Colors.white,
+                //           border: Border.all(
+                //             width: 2,
+                //             color: kDarkBlueColor,
+                //           ),
+                //           borderRadius: const BorderRadius.only(
+                //             bottomRight: Radius.circular(30),
+                //             topRight: Radius.circular(30),
+                //           ),
+                //         ),
+                //         child: Icon(
+                //           Icons.drag_handle_outlined,
+                //           color:
+                //               listBoxColor == true ? Colors.white : Colors.blue,
+                //           size: 26,
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
                 leading: InkWell(
                   onTap: () {
                     Navigator.pop(context);
                   },
                   child: const Icon(
                     Icons.arrow_back_ios_sharp,
-                    color: Colors.black87,
+                    color: Colors.blue,
                     size: 26,
                   ),
                 ),
-                actions: const [
-                  Icon(
-                    Icons.arrow_back_ios_sharp,
-                    color: Colors.transparent,
-                    size: 26,
-                  ),
-                ],
+                // actions: const [
+                //   Icon(
+                //     Icons.arrow_back_ios_sharp,
+                //     color: Colors.transparent,
+                //     size: 26,
+                //   ),
+                // ],
               ),
         body: PageView(
           scrollDirection: Axis.horizontal,
